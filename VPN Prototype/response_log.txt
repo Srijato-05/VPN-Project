@@ -1,1 +1,0 @@
-[2025-07-03T14:15:40.814833400] Authentication successful. Welcome to the VPN.
