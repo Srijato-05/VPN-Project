@@ -1,71 +1,83 @@
 package functionality;
 
-import static functionality.CryptoUtils.*;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Scanner;
-import javax.crypto.*;
+import javax.crypto.SecretKey;
 
 public class Client {
-    private static final String SERVER_IP = "localhost";
+
+    private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 9999;
 
-    public static void main(String[] args) {
-        try (Socket socket = new Socket(SERVER_IP, SERVER_PORT)) {
-            NetUtils.logClient("Connected to VPN Server");
+    // ✅ GUI-compatible method
+    public static String sendCredentials(String username, String password) throws Exception {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+             DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            DataInputStream in = new DataInputStream(socket.getInputStream());
+                String credentials = username + ":" + password;
 
-            NetUtils.logClient("Loading server's public key...");
-            PublicKey publicKey = loadPublicKey("keys/public.key");
+            // Generate AES key
+            SecretKey aesKey = CryptoUtils.generateKey("client-session");
 
-            NetUtils.logClient("Generating AES key...");
-            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-            keyGen.init(128);
-            SecretKey aesKey = keyGen.generateKey();
+            // Encrypt AES key using server's public key
+            PublicKey serverPublicKey = loadPublicKey("keys/public.key");
+            byte[] encryptedAESKey = encryptRSA(aesKey.getEncoded(), serverPublicKey);
 
-            NetUtils.logClient("Encrypting AES key with server's public key...");
-            byte[] encryptedAESKey = encryptRSA(aesKey.getEncoded(), publicKey);
+            // Encrypt credentials using AES
+            byte[] encryptedCred = CryptoUtils.encryptAES(credentials.getBytes(), aesKey);
+
+            // Send encrypted AES key
             out.writeInt(encryptedAESKey.length);
             out.write(encryptedAESKey);
 
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter username: ");
-            String username = scanner.nextLine();
-            System.out.print("Enter password: ");
-            String password = scanner.nextLine();
-            String credentials = username + ":" + password;
+            // Send encrypted credentials
+            out.writeInt(encryptedCred.length);
+            out.write(encryptedCred);
 
-            NetUtils.logClient("Encrypting credentials with AES...");
-            byte[] encryptedCredentials = encryptAES(credentials.getBytes(), aesKey);
-            out.writeInt(encryptedCredentials.length);
-            out.write(encryptedCredentials);
-
-            int responseLength = in.readInt();
-            byte[] encryptedResponse = new byte[responseLength];
+            // Receive encrypted response
+            int responseLen = in.readInt();
+            byte[] encryptedResponse = new byte[responseLen];
             in.readFully(encryptedResponse);
 
-            NetUtils.logClient("Decrypting server response...");
-            String decryptedResponse = new String(decryptAES(encryptedResponse, aesKey));
-            System.out.println("[Client] " + decryptedResponse);
-            NetUtils.logClient("Server response: " + decryptedResponse);
-            NetUtils.logClientResponse(decryptedResponse);
+            return new String(CryptoUtils.decryptAES(encryptedResponse, aesKey));
+        }
+    }
+
+    // ✅ CLI fallback (optional)
+    public static void main(String[] args) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            System.out.print("Enter username: ");
+            String username = br.readLine();
+
+            System.out.print("Enter password: ");
+            String password = br.readLine();
+
+            String result = sendCredentials(username, password);
+            System.out.println("Server response: " + result);
 
         } catch (Exception e) {
-            NetUtils.logClient("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    // ✅ Load RSA public key from file
     private static PublicKey loadPublicKey(String filePath) throws Exception {
         byte[] keyBytes = Files.readAllBytes(Paths.get(filePath));
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         KeyFactory factory = KeyFactory.getInstance("RSA");
         return factory.generatePublic(spec);
+    }
+
+    // ✅ RSA encryption for AES key
+    private static byte[] encryptRSA(byte[] data, PublicKey publicKey) throws Exception {
+        javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("RSA");
+        cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, publicKey);
+        return cipher.doFinal(data);
     }
 }

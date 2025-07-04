@@ -3,7 +3,10 @@ package functionality;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -11,61 +14,53 @@ public class Server {
     private static final int PORT = 9999;
 
     public static void main(String[] args) {
-        try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            keyGen.initialize(2048);
-            KeyPair pair = keyGen.generateKeyPair();
-            PrivateKey privateKey = pair.getPrivate();
-            PublicKey publicKey = pair.getPublic();
-
-            File keyDir = new File("keys");
-            if (!keyDir.exists()) keyDir.mkdirs();
-            try (FileOutputStream fos = new FileOutputStream("keys/public.key")) {
-                fos.write(publicKey.getEncoded());
-            }
-
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            NetUtils.logServer("VPN Server started on port " + PORT);
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            functionality.NetUtils.logServer("VPN Server started on port " + PORT);
 
             while (true) {
-                Socket socket = serverSocket.accept();
-                NetUtils.logServer("Client connected");
+                try (Socket clientSocket = serverSocket.accept()) {
+                    functionality.NetUtils.logServer("Client connected");
 
-                new Thread(() -> handleClient(socket, privateKey)).start();
+                    DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+                    DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+
+                    PrivateKey privateKey = loadPrivateKey("keys/private.key");
+
+                    int aesLength = in.readInt();
+                    byte[] encryptedAESKey = new byte[aesLength];
+                    in.readFully(encryptedAESKey);
+
+                    byte[] aesKeyBytes = functionality.CryptoUtils.decryptRSA(encryptedAESKey, privateKey);
+                    SecretKey aesKey = new SecretKeySpec(aesKeyBytes, "AES");
+
+                    int credLength = in.readInt();
+                    byte[] encryptedCred = new byte[credLength];
+                    in.readFully(encryptedCred);
+
+                    String credentials = new String(functionality.CryptoUtils.decryptAES(encryptedCred, aesKey));
+                    String response = functionality.UserValidator.isValid(credentials);
+
+                    functionality.NetUtils.logServer("Response to client: " + response);
+
+                    byte[] encryptedResponse = functionality.CryptoUtils.encryptAES(response.getBytes(), aesKey);
+                    out.writeInt(encryptedResponse.length);
+                    out.write(encryptedResponse);
+
+                } catch (Exception e) {
+                    functionality.NetUtils.logServer("Client handling error: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         } catch (Exception e) {
-            NetUtils.logServer("Error: " + e.getMessage());
+            functionality.NetUtils.logServer("Server startup error: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private static void handleClient(Socket socket, PrivateKey privateKey) {
-        try (
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream())
-        ) {
-            int keyLength = in.readInt();
-            byte[] encryptedAESKey = new byte[keyLength];
-            in.readFully(encryptedAESKey);
-
-            byte[] aesKeyBytes = CryptoUtils.decryptRSA(encryptedAESKey, privateKey);
-            SecretKey aesKey = new SecretKeySpec(aesKeyBytes, 0, aesKeyBytes.length, "AES");
-
-            int credLength = in.readInt();
-            byte[] encryptedCred = new byte[credLength];
-            in.readFully(encryptedCred);
-            String credentials = new String(CryptoUtils.decryptAES(encryptedCred, aesKey));
-
-            String response = UserValidator.isValid(credentials) ? "Access Granted" : "Access Denied";
-            NetUtils.logServer("Response to client: " + response);
-
-            byte[] encryptedResponse = CryptoUtils.encryptAES(response.getBytes(), aesKey);
-            out.writeInt(encryptedResponse.length);
-            out.write(encryptedResponse);
-
-        } catch (Exception e) {
-            NetUtils.logServer("Client handling error: " + e.getMessage());
-            e.printStackTrace();
-        }
+    private static PrivateKey loadPrivateKey(String filePath) throws Exception {
+        byte[] keyBytes = Files.readAllBytes(Paths.get(filePath));
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory factory = KeyFactory.getInstance("RSA");
+        return factory.generatePrivate(spec);
     }
 }

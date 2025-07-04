@@ -1,22 +1,43 @@
 package functionality;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class UserValidator {
+
     private static final String USER_FILE = "data/users.txt";
 
-    public static boolean isValid(String credentials) {
-        try {
-            Path path = Paths.get(USER_FILE);
-            if (!Files.exists(path)) return false;
+    public static boolean validate(String username, String password) {
+        try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))) {
+            String line;
 
-            return Files.lines(path)
-                        .map(String::trim)
-                        .anyMatch(line -> line.equals(credentials));
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts.length == 2) {
+                    String fileUsername = parts[0].trim();
+                    String filePassword = parts[1].trim();
+
+                    if (fileUsername.equals(username) && filePassword.equals(password)) {
+                        return true;
+                    }
+                }
+            }
         } catch (IOException e) {
-            NetUtils.logServer("User validation error: " + e.getMessage());
-            return false;
+            e.printStackTrace();
         }
+
+        return false;
+    }
+
+    public static String isValid(String credentials) {
+        String[] parts = credentials.split(":");
+        if (parts.length != 2) return "Invalid format";
+
+        String username = parts[0].trim();
+        String password = parts[1].trim();
+
+        boolean valid = validate(username, password);
+        return valid ? "Authentication successful" : "Authentication failed";
     }
 }

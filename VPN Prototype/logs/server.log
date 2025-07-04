@@ -1,0 +1,36 @@
+[1751561451792] VPN Server started on port 9999
+[1751561480600] VPN Server started on port 9999
+[1751561560735] VPN Server started on port 9999
+[1751561657567] VPN Server started on port 9999
+[1751561684584] VPN Server started on port 9999
+[1751561708539] Client connected
+[1751561708548] Client handling error: keys\private.key
+[1751562613612] VPN Server started on port 9999
+[1751562626459] VPN Server started on port 9999
+[1751562644235] Client connected
+[1751562644243] Client handling error: keys\private.key
+[1751612489154] VPN Server started on port 9999
+[1751612509586] Client connected
+[1751612509594] Client handling error: keys\private.key
+[1751612607209] VPN Server started on port 9999
+[1751612622544] Client connected
+[1751612622716] Response to client: Authentication failed
+[1751612838904] VPN Server started on port 9999
+[1751612851729] Client connected
+[1751612851959] Response to client: Authentication failed
+[1751612932178] VPN Server started on port 9999
+[1751612946717] Client connected
+[1751612946904] Response to client: Invalid format
+[1751613111326] VPN Server started on port 9999
+[1751613128713] Client connected
+[1751613128876] Response to client: Invalid format
+[1751613146829] Client connected
+[1751613146914] Response to client: Invalid format
+[1751613214468] VPN Server started on port 9999
+[1751613230779] Client connected
+[1751613230976] Response to client: Invalid format
+[1751613242894] Client connected
+[1751613242984] Response to client: Invalid format
+[1751613304888] VPN Server started on port 9999
+[1751613324461] Client connected
+[1751613324639] Response to client: Authentication successful
