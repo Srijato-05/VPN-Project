@@ -1,9 +1,0 @@
-[2025-07-03T14:15:03.703318300] [Server] 14:15:03.701316500 - Public key written to public.key
-[2025-07-03T14:15:03.716318100] [Server] 14:15:03.715318800 - VPN Server started on port 9999
-[2025-07-03T14:15:18.744297300] [Server] 14:15:18.743300100 - Client connected: /127.0.0.1
-[2025-07-03T14:15:18.910461400] [Server] AES key received and decrypted
-[2025-07-03T14:15:40.811852900] [Server] Credentials received: srijato:sdas05
-[2025-07-03T14:15:40.812835200] [Server] Response sent to client
-[2025-07-03T17:02:49.645161600] VPN Server started on port 9999
-[2025-07-03T17:03:04.514843300] Client connected
-[2025-07-03T17:03:14.754133700] Response to client: Access Granted
