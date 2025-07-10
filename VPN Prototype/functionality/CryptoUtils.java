@@ -1,83 +1,68 @@
 package functionality;
 
+import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoUtils {
 
-    private static final String AES_ALGO = "AES/CBC/PKCS5Padding";
-    private static final String RSA_ALGO = "RSA";
-    private static final String HASH_ALGO = "PBKDF2WithHmacSHA256";
-    private static final int IV_SIZE = 16;
-    private static final int AES_KEY_SIZE = 128;
-    private static final int ITERATIONS = 65536;
-    private static final byte[] SALT = "vpn-hardcoded-salt".getBytes(); // Could be improved with random salt
-
-    /**
-     * Generate AES SecretKey from a password (using PBKDF2).
-     */
-    public static SecretKey generateKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), SALT, ITERATIONS, AES_KEY_SIZE);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance(HASH_ALGO);
-        byte[] keyBytes = factory.generateSecret(spec).getEncoded();
-        return new SecretKeySpec(keyBytes, "AES");
+    // Generate AES secret key from a passphrase (SHA-256 hash truncated to 16 bytes for AES-128)
+    public static SecretKey generateKey(String passphrase) throws Exception {
+        MessageDigest sha = MessageDigest.getInstance("SHA-256");
+        byte[] keyBytes = sha.digest(passphrase.getBytes(StandardCharsets.UTF_8));
+        byte[] aesKey = Arrays.copyOf(keyBytes, 16); // AES-128
+        return new SecretKeySpec(aesKey, "AES");
     }
 
-    /**
-     * AES Encryption with random IV prepended to ciphertext.
-     */
+    // Encrypt data using AES (CBC with PKCS5 Padding)
     public static byte[] encryptAES(byte[] data, SecretKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance(AES_ALGO);
-        byte[] iv = generateIV();
-        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        byte[] iv = generateIV();  // 16 bytes
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
         byte[] encrypted = cipher.doFinal(data);
 
-        byte[] combined = new byte[IV_SIZE + encrypted.length];
-        System.arraycopy(iv, 0, combined, 0, IV_SIZE);
-        System.arraycopy(encrypted, 0, combined, IV_SIZE, encrypted.length);
-        return combined;
+        // Combine IV + encrypted data
+        byte[] result = new byte[iv.length + encrypted.length];
+        System.arraycopy(iv, 0, result, 0, iv.length);
+        System.arraycopy(encrypted, 0, result, iv.length, encrypted.length);
+        return result;
     }
 
-    /**
-     * AES Decryption (extracts IV from ciphertext).
-     */
-    public static byte[] decryptAES(byte[] encrypted, SecretKey key) throws Exception {
-        byte[] iv = Arrays.copyOfRange(encrypted, 0, IV_SIZE);
-        byte[] actualCipher = Arrays.copyOfRange(encrypted, IV_SIZE, encrypted.length);
-        Cipher cipher = Cipher.getInstance(AES_ALGO);
+    // Decrypt AES (extract IV from first 16 bytes)
+    public static byte[] decryptAES(byte[] data, SecretKey key) throws Exception {
+        if (data.length < 16) throw new IllegalArgumentException("Invalid AES data length");
+
+        byte[] iv = Arrays.copyOfRange(data, 0, 16);
+        byte[] ciphertext = Arrays.copyOfRange(data, 16, data.length);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-        return cipher.doFinal(actualCipher);
+        return cipher.doFinal(ciphertext);
     }
 
-    /**
-     * RSA Encryption using public key.
-     */
+    // Encrypt data using RSA
     public static byte[] encryptRSA(byte[] data, PublicKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance(RSA_ALGO);
+        Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         return cipher.doFinal(data);
     }
 
-    /**
-     * RSA Decryption using private key.
-     */
-    public static byte[] decryptRSA(byte[] data, PrivateKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance(RSA_ALGO);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return cipher.doFinal(data);
+    // Decrypt RSA
+    public static byte[] decryptRSA(byte[] encryptedData, PrivateKey privateKey) throws Exception {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        return cipher.doFinal(encryptedData);
     }
 
-    /**
-     * Generate secure random 16-byte IV.
-     */
+    // Generate random IV (16 bytes)
     private static byte[] generateIV() {
-        byte[] iv = new byte[IV_SIZE];
-        new SecureRandom().nextBytes(iv);
+        byte[] iv = new byte[16];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
         return iv;
     }
 }

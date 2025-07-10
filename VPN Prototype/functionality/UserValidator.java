@@ -1,62 +1,64 @@
 package functionality;
 
 import java.io.*;
-import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserValidator {
 
-    private static final String USER_FILE = "data/users.txt";
+    private static final String USERS_FILE = "data/users.txt";
     private static final Map<String, String> users = new HashMap<>();
 
     static {
-        try {
-            loadUsers();
-        } catch (IOException e) {
-            NetUtils.logServer("Error loading users.txt: " + e.getMessage());
-        }
+        loadUsers();
     }
 
-    private static void loadUsers() throws IOException {
-        Path userPath = Paths.get(USER_FILE);
-        Files.createDirectories(userPath.getParent());
-
-        if (!Files.exists(userPath)) {
-            // Create default user file with admin
-            try (BufferedWriter bw = Files.newBufferedWriter(userPath)) {
-                bw.write("admin:admin123");
-                bw.newLine();
-                NetUtils.logServer("users.txt not found. Created with default credentials.");
-            }
-        }
-
-        users.clear();
-        try (BufferedReader br = Files.newBufferedReader(userPath)) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(":");
-                if (parts.length == 2) {
-                    users.put(parts[0].trim(), parts[1].trim());
+    // Load users from file at startup
+    private static void loadUsers() {
+        try {
+            File file = new File(USERS_FILE);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write("admin:admin123");  // Default user
+                    writer.newLine();
                 }
             }
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(":", 2);
+                    if (parts.length == 2) {
+                        users.put(parts[0].trim(), parts[1].trim());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            NetUtils.logServer("Error loading user database: " + e.getMessage());
         }
     }
 
+    // Validate credentials
     public static String isValid(String credentials) {
-        if (credentials == null || !credentials.contains(":")) {
-            return "Invalid format. Expected 'username:password'.";
-        }
+        if (credentials == null || !credentials.contains(":"))
+            return "Invalid format. Expected username:password";
 
         String[] parts = credentials.split(":", 2);
         String username = parts[0].trim();
         String password = parts[1].trim();
 
-        if (!users.containsKey(username)) {
+        if (username.isEmpty() || password.isEmpty()) {
+            return "Username or password cannot be empty.";
+        }
+
+        String storedPassword = users.get(username);
+        if (storedPassword == null) {
             return "User not found.";
         }
 
-        if (!users.get(username).equals(password)) {
+        if (!storedPassword.equals(password)) {
             return "Incorrect password.";
         }
 
