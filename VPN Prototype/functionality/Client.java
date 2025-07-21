@@ -19,8 +19,8 @@ public class Client {
 
     public static String sendCredentials(String username, String password) throws Exception {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-             DataInputStream in = new DataInputStream(socket.getInputStream())) {
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
             long timestamp = Instant.now().toEpochMilli();
             String credentials = username + ":" + password + ":" + timestamp;
