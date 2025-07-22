@@ -7,14 +7,23 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 📌 Table of Contents
 
 Abstract
+
 Project Goals
+
 Key Features
+
 System Requirements
+
 System Architecture
+
 Flowcharts & Diagrams
+
 Installation and Setup
+
 How to Use
+
 Final Notes
+
 Author
 
 ---
