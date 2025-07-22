@@ -1,12 +1,12 @@
 # Java-Based VPN GUI Project using OpenVPN
 
-## 📝 Abstract
+## Abstract
 
 This project implements a complete **Java-based GUI VPN Client** that integrates seamlessly with **OpenVPN**. Designed to support multiple platforms (Windows, Linux, macOS, Android, iOS), it enables users to select platform-specific `.ovpn` configuration files, input credentials, connect/disconnect from the VPN, and monitor connection status in a user-friendly interface. It automates OpenVPN execution and logs all activities for auditing and diagnostics.
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 
 1. [Abstract](#-abstract)
 2. [Project Goals](#project-goals)
@@ -21,7 +21,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 - Provide a **graphical user interface** for controlling OpenVPN connections.
 - Automate the VPN connection using `.ovpn` configuration files.
@@ -31,7 +31,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 - ✅ GUI-based VPN Client written in Java using Swing.
 - 🔐 Credential entry with secure password handling.
@@ -47,7 +47,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 💻 System Requirements
+## System Requirements
 
 ### Software
 - Java JDK 17 or higher
@@ -61,7 +61,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### 🔹 Client Side
 - **GUI Interface**: Built using Java Swing.
@@ -81,7 +81,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 🔄 Flowcharts & Diagrams
+## Flowcharts & Diagrams
 
 ### VPN Connection Flow
 
@@ -114,7 +114,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## ⚙️ Installation and Setup
+## Installation and Setup
 
 1. **Install Java JDK**  
    Download and install JDK 17+ from [https://adoptopenjdk.net](https://adoptopenjdk.net)
@@ -133,7 +133,7 @@ This project implements a complete **Java-based GUI VPN Client** that integrates
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. **Launch** `ClientGUI.java`.
 2. **Select a platform** from the dropdown (e.g., `windows`, `android`, etc.).
@@ -151,7 +151,7 @@ To **disconnect**, you can currently close the OpenVPN process manually (Task Ma
 
 ---
 
-## 📌 Final Notes
+## Final Notes
 
 - This VPN project is intended for **educational and secure research purposes**.
 - The OpenVPN process is **fully integrated** within Java GUI, giving a hybrid native-Java VPN launcher.
@@ -161,8 +161,8 @@ For any issue, logs in `logs/client.log` and `login_history.txt` will help you d
 
 ---
 
-## 👨‍💻 Author
-
+## Author
+   Srijato Das   
 **Srijato’s VPN Project**  
 Java | OpenVPN | Secure Auth GUI  
 2025
