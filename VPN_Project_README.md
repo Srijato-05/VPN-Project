@@ -162,8 +162,8 @@ For any issue, logs in `logs/client.log` and `login_history.txt` will help you d
 ---
 
 ## Author
-   Srijato Das   
-**Srijato’s VPN Project**  
+
+**Srijato Das**  
 Java | OpenVPN | Secure Auth GUI  
 2025
 
