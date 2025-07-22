@@ -4,27 +4,21 @@
 
 This project implements a complete **Java-based GUI VPN Client** that integrates seamlessly with **OpenVPN**. Designed to support multiple platforms (Windows, Linux, macOS, Android, iOS), it enables users to select platform-specific `.ovpn` configuration files, input credentials, connect/disconnect from the VPN, and monitor connection status in a user-friendly interface. It automates OpenVPN execution and logs all activities for auditing and diagnostics.
 
-📌 Table of Contents
+---
 
-Abstract
+## 📌 Table of Contents
 
-Project Goals
+1. [Abstract](#abstract)
+2. [Project Goals](#project-goals)
+3. [Key Features](#key-features)
+4. [System Requirements](#system-requirements)
+5. [System Architecture](#system-architecture)
+6. [Flowcharts & Diagrams](#flowcharts--diagrams)
+7. [Installation and Setup](#installation-and-setup)
+8. [How to Use](#how-to-use)
+9. [Final Notes](#final-notes)
+10. [Author](#author)
 
-Key Features
-
-System Requirements
-
-System Architecture
-
-Flowcharts & Diagrams
-
-Installation and Setup
-
-How to Use
-
-Final Notes
-
-Author
 
 ---
 
