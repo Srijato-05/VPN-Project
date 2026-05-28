@@ -126,7 +126,7 @@ sequenceDiagram
     alt Validation Successful
         Server->>Server: Generate Session Token (UUID)
         Server-->>Client: Return Encrypted Response (SUCCESS:Token:vpn_user:vpn_pass)
-        Client->>Client: Cache token and credentials in memory; Clear text input fields
+        Client->>Client: Cache token and credentials in memory and clear text input fields
     else Validation Failed
         Server-->>Client: Return Encrypted Response (ERROR:Auth failed)
     end
