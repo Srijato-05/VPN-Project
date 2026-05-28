@@ -24,7 +24,7 @@ public class VpnSystemTest {
 
     public static void main(String[] args) {
         System.out.println(CYAN + "===============================================" + RESET);
-        System.out.println(CYAN + "   CIPHERVPN COMPREHENSIVE SYSTEM TEST SUITE   " + RESET);
+        System.out.println(CYAN + "   VANGUARD-VPN COMPREHENSIVE SYSTEM TEST SUITE   " + RESET);
         System.out.println(CYAN + "===============================================" + RESET);
 
         try {
@@ -443,7 +443,7 @@ public class VpnSystemTest {
         assertNotNull(configText);
         
         if (!configText.startsWith("ERROR:")) {
-            assertTrue(configText.contains("# --- CipherVPN Double Hop Tunnel Activated ---"));
+            assertTrue(configText.contains("# --- Vanguard-VPN Double Hop Tunnel Activated ---"));
             assertTrue(configText.contains("route 10.8.0.1 255.255.255.255 net_gateway"));
         } else {
             // Test Server's getConfig directly with mocked directory and file
@@ -458,7 +458,7 @@ public class VpnSystemTest {
             }
             
             String response = (String) getConfigMethod.invoke(null, "testloc", "test.ovpn", true);
-            assertTrue(response.contains("# --- CipherVPN Double Hop Tunnel Activated ---"));
+            assertTrue(response.contains("# --- Vanguard-VPN Double Hop Tunnel Activated ---"));
             assertTrue(response.contains("route 10.8.0.1 255.255.255.255 net_gateway"));
             
             tempConfigFile.delete();

@@ -582,9 +582,9 @@ public class Client {
         try {
             new ProcessBuilder("netsh", "advfirewall", "set", "allprofiles", "state", "on").start();
             disableKillSwitch();
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=CipherVPN-KillSwitch-Block", "dir=out", "action=block").start();
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=CipherVPN-KillSwitch-AllowVPN", "dir=out", "action=allow", "remoteip=" + serverIp).start();
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=CipherVPN-KillSwitch-AllowLocal", "dir=out", "action=allow", "remoteip=127.0.0.1").start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=Vanguard-VPN-KillSwitch-Block", "dir=out", "action=block").start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=Vanguard-VPN-KillSwitch-AllowVPN", "dir=out", "action=allow", "remoteip=" + serverIp).start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "add", "rule", "name=Vanguard-VPN-KillSwitch-AllowLocal", "dir=out", "action=allow", "remoteip=127.0.0.1").start();
             NetUtils.logClient("[Kill Switch] Firewall rules deployed. Outbound traffic blocked except for " + serverIp);
         } catch (IOException e) {
             NetUtils.logClient("Failed to enable Kill Switch: " + e.getMessage());
@@ -595,9 +595,9 @@ public class Client {
         String os = System.getProperty("os.name").toLowerCase();
         if (!os.contains("win")) return;
         try {
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=CipherVPN-KillSwitch-Block").start();
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=CipherVPN-KillSwitch-AllowVPN").start();
-            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=CipherVPN-KillSwitch-AllowLocal").start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=Vanguard-VPN-KillSwitch-Block").start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=Vanguard-VPN-KillSwitch-AllowVPN").start();
+            new ProcessBuilder("netsh", "advfirewall", "firewall", "delete", "rule", "name=Vanguard-VPN-KillSwitch-AllowLocal").start();
             NetUtils.logClient("[Kill Switch] Firewall rules removed.");
         } catch (IOException e) {
             NetUtils.logClient("Failed to disable Kill Switch: " + e.getMessage());

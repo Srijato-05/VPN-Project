@@ -1,8 +1,8 @@
-# CipherVPN Professional: Technical Reference and Implementation Manual
+# Vanguard-VPN Professional: Technical Reference and Implementation Manual
 
 ## 1. Executive System Overview
 
-CipherVPN Professional is an enterprise-grade Virtual Private Network (VPN) middleware and client dashboard prototype written in Java. The system is designed to provide secure, cross-platform VPN tunnel orchestration using OpenVPN and WireGuard backends. It integrates a local zero-knowledge credential vault, a hybrid network latency engine, session-based pre-authorization, and Windows Filtering Platform (WFP) rules for DNS leak protection.
+Vanguard-VPN Professional is an enterprise-grade Virtual Private Network (VPN) middleware and client dashboard prototype written in Java. The system is designed to provide secure, cross-platform VPN tunnel orchestration using OpenVPN and WireGuard backends. It integrates a local zero-knowledge credential vault, a hybrid network latency engine, session-based pre-authorization, and Windows Filtering Platform (WFP) rules for DNS leak protection.
 
 ---
 
@@ -190,7 +190,7 @@ config.dir=openvpn-configs
 ```
 
 ### 7.3. Automated Build & Packaging
-Run the automated batch script to compile and assemble the unified `CipherVPN.jar`:
+Run the automated batch script to compile and assemble the unified `Vanguard-VPN.jar`:
 ```powershell
 .\build.bat
 ```
@@ -200,22 +200,22 @@ This script automatically compiles the classes, generates the JAR with `Launcher
 
 #### 1. Start the Authentication Server
 ```powershell
-java -jar CipherVPN.jar server
+java -jar Vanguard-VPN.jar server
 ```
 
 #### 2. Start the VPN Proxy
 ```powershell
-java -jar CipherVPN.jar proxy
+java -jar Vanguard-VPN.jar proxy
 ```
 
 #### 3. Run the Client Dashboard (With Auto-Elevation Failsafes)
 Launch the Client. If the shell is non-elevated, the launcher automatically requests UAC elevation and binds execution safely to the JAR directory:
 ```powershell
-java -jar CipherVPN.jar client
+java -jar Vanguard-VPN.jar client
 ```
-*(Or simply double-click `CipherVPN.jar` in Windows Explorer)*
+*(Or simply double-click `Vanguard-VPN.jar` in Windows Explorer)*
 
 #### 4. Run the Test Suite
 ```powershell
-java -jar CipherVPN.jar test
+java -jar Vanguard-VPN.jar test
 ```

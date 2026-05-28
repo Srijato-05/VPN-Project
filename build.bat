@@ -1,6 +1,6 @@
 @echo off
 echo ==============================================
-echo   CIPHERVPN UNIFIED BUILD AND PACKAGING SCRIPT  
+echo   VANGUARD-VPN UNIFIED BUILD AND PACKAGING SCRIPT  
 echo ==============================================
 
 echo [1/3] Compiling all source components...
@@ -11,8 +11,8 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-echo [2/3] Packaging everything into a single unified CipherVPN.jar...
-jar --create --file=CipherVPN.jar --main-class=Launcher *.class functionality/*.class vpn_proxy/*.class
+echo [2/3] Packaging everything into a single unified Vanguard-VPN.jar...
+jar --create --file=Vanguard-VPN.jar --main-class=Launcher *.class functionality/*.class vpn_proxy/*.class
 if %errorlevel% neq 0 (
     echo CRITICAL ERROR: JAR packaging failed.
     pause
@@ -25,13 +25,13 @@ del functionality\*.class
 del vpn_proxy\*.class
 
 echo ==============================================
-echo   SUCCESS: CipherVPN.jar built successfully!
+echo   SUCCESS: Vanguard-VPN.jar built successfully!
 echo ==============================================
 echo.
 echo Launch options:
-echo   - Run Client (auto-elevates):  java -jar CipherVPN.jar client
-echo   - Run Server:                 java -jar CipherVPN.jar server
-echo   - Run Proxy:                  java -jar CipherVPN.jar proxy
-echo   - Run Test Suite:             java -jar CipherVPN.jar test
+echo   - Run Client (auto-elevates):  java -jar Vanguard-VPN.jar client
+echo   - Run Server:                 java -jar Vanguard-VPN.jar server
+echo   - Run Proxy:                  java -jar Vanguard-VPN.jar proxy
+echo   - Run Test Suite:             java -jar Vanguard-VPN.jar test
 echo.
 pause

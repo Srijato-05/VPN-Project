@@ -64,7 +64,7 @@ public class ClientGUI {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
 
-        frame = new JFrame("CipherVPN Client Dashboard");
+        frame = new JFrame("Vanguard-VPN Client Dashboard");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(BG_DARK);
         
@@ -91,7 +91,7 @@ public class ClientGUI {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setOpaque(false);
         
-        JLabel brandLabel = new JLabel("🔒 CipherVPN Professional");
+        JLabel brandLabel = new JLabel("🔒 Vanguard-VPN Professional");
         brandLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         brandLabel.setForeground(ACCENT_CYAN);
         headerPanel.add(brandLabel, BorderLayout.WEST);
@@ -674,7 +674,7 @@ public class ClientGUI {
             });
         };
 
-        NetUtils.logClient("CipherVPN Professional initialized.");
+        NetUtils.logClient("Vanguard-VPN Professional initialized.");
         NetUtils.logClient("OS: " + System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ")");
         NetUtils.logClient("Java Version: " + System.getProperty("java.version"));
         NetUtils.logClient("Security Engine: Hardware-Bound AES-256 Vault enabled.");

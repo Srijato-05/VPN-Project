@@ -74,7 +74,7 @@ public class Launcher {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
-        JOptionPane.showMessageDialog(null, message, "CipherVPN - " + title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "Vanguard-VPN - " + title, JOptionPane.ERROR_MESSAGE);
     }
 
     private static boolean isWindows() {
@@ -128,10 +128,11 @@ public class Launcher {
 
         // Construct safe PowerShell execution arguments using a dedicated ProcessBuilder
         // We use single quotes in PowerShell to denote literal strings, replacing internal single quotes to prevent breakouts.
+        // We separate arguments with commas so PowerShell parses them as an array of arguments for -ArgumentList.
         StringBuilder argBuilder = new StringBuilder();
-        argBuilder.append("'-Xmx256m' '-Xms64m' "); // Failsafe: Prevent memory exhaustion on infrastructure
+        argBuilder.append("'-Xmx256m', '-Xms64m'"); // Failsafe: Prevent memory exhaustion on infrastructure
         for (String arg : sanitizedArgs) {
-            argBuilder.append("'").append(arg.replace("'", "''")).append("' ");
+            argBuilder.append(", '").append(arg.replace("'", "''")).append("'");
         }
 
         // Failsafe: When PowerShell elevates, it often defaults the working directory to C:\Windows\System32
@@ -148,7 +149,28 @@ public class Launcher {
 
         System.out.println("Executing elevation payload...");
         
-        ProcessBuilder pb = new ProcessBuilder("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", psCommand);
+        // Resolve absolute path to powershell.exe to prevent CreateProcess error=2 when PATH is restricted
+        // Checks Sysnative first to bypass 32-bit to 64-bit filesystem redirection on Windows x64
+        String windir = System.getenv("SystemRoot");
+        if (windir == null) windir = System.getenv("windir");
+        if (windir == null) windir = "C:\\Windows";
+        
+        String[] possiblePsPaths = {
+            "Sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe"
+        };
+        
+        String psPath = "powershell.exe"; // fallback
+        for (String relPath : possiblePsPaths) {
+            File testFile = new File(windir, relPath);
+            if (testFile.exists()) {
+                psPath = testFile.getAbsolutePath();
+                break;
+            }
+        }
+
+        ProcessBuilder pb = new ProcessBuilder(psPath, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", psCommand);
         pb.directory(workingDirectory); // Failsafe: Bind local ProcessBuilder to safe directory
         pb.redirectErrorStream(true);
         Process p = pb.start();

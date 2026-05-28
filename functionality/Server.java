@@ -190,7 +190,7 @@ public class Server {
         try {
             String configContent = new String(Files.readAllBytes(file.toPath()));
             if (multiHop) {
-                configContent = "# --- CipherVPN Double Hop Tunnel Activated ---\n" +
+                configContent = "# --- Vanguard-VPN Double Hop Tunnel Activated ---\n" +
                                 "# Entry Hop IP: US-Transit-Node [10.8.0.1]\n" +
                                 "# Exit Destination: " + fileName + "\n" +
                                 "route 10.8.0.1 255.255.255.255 net_gateway\n" +

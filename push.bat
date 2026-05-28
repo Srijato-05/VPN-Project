@@ -14,7 +14,7 @@ git remote remove origin >nul 2>&1
 git remote add origin https://github.com/Srijato-05/Vanguard-VPN
 
 echo [3] Staging all files...
-git add Launcher.java build.bat push.bat README.md VpnSystemTest.java KeyGenerator.java config/* functionality/* vpn_proxy/* keys/* data/* openvpn-configs/*
+git add Launcher.java build.bat push.bat create_release.bat README.md VpnSystemTest.java KeyGenerator.java config/* functionality/* vpn_proxy/* keys/* data/* openvpn-configs/*
 
 echo [4] Committing codebase...
 git commit -m "Initialize Vanguard-VPN codebase with secure launcher, build automation, and tests"
