@@ -65,4 +65,40 @@ public class CryptoUtils {
         random.nextBytes(iv);
         return iv;
     }
+
+    // Generate secure random salt (16 bytes)
+    public static byte[] generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return salt;
+    }
+
+    // Hash password using SHA-256 with salt
+    public static String hashPassword(String password, byte[] salt) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(salt);
+        byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        return bytesToHex(hashedBytes);
+    }
+
+    // Helper to convert byte array to hex string
+    public static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    // Helper to convert hex string to byte array
+    public static byte[] hexToBytes(String hex) {
+        int len = hex.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                                 + Character.digit(hex.charAt(i+1), 16));
+        }
+        return data;
+    }
 }

@@ -7,3 +7,89 @@
 [2025-07-18 11:49:26] Proxy Server started on port 9999
 [2025-07-18 11:54:42] Proxy Server started on port 9999
 [2025-07-18 11:59:30] Proxy Server started on port 9999
+[2026-05-27 23:32:15] Proxy Server started on port 9999
+[2026-05-28 00:38:05] Authentication Server started on port 9999
+[2026-05-28 00:38:23] Client connected from: /127.0.0.1
+[2026-05-28 00:40:11] Connection handler error: Connection reset
+[2026-05-28 00:48:58] Authentication Server started on port 9999
+[2026-05-28 00:49:09] Client connected from: /127.0.0.1
+[2026-05-28 00:54:29] Connection handler error: Connection reset
+[2026-05-28 01:05:58] Authentication Server started on port 9999
+[2026-05-28 01:06:07] Client connected from: /127.0.0.1
+[2026-05-28 01:15:37] Authentication Server started on port 9999
+[2026-05-28 01:15:45] Client connected from: /127.0.0.1
+[2026-05-28 01:18:36] Client disconnected: /127.0.0.1
+[2026-05-28 01:18:49] Authentication Server started on port 9999
+[2026-05-28 01:18:58] Client connected from: /127.0.0.1
+[2026-05-28 01:51:50] Client disconnected: /127.0.0.1
+[2026-05-28 01:58:01] Server startup failed: Address already in use: bind
+[2026-05-28 01:58:56] Authentication Server started on port 9999
+[2026-05-28 01:59:11] Client connected from: /127.0.0.1
+[2026-05-28 02:07:00] Authentication Server started on port 9999
+[2026-05-28 02:07:09] Client connected from: /127.0.0.1
+[2026-05-28 02:12:05] Authentication Server started on port 9999
+[2026-05-28 02:12:13] Client connected from: /127.0.0.1
+[2026-05-28 02:12:32] Client disconnected: /127.0.0.1
+[2026-05-28 13:47:51] Authentication Server started on port 9998
+[2026-05-28 13:47:52] Client connected from: /127.0.0.1
+[2026-05-28 13:47:52] Received register request from: servertestuser
+[2026-05-28 13:47:52] Received login request from: servertestuser
+[2026-05-28 13:47:52] Client disconnected: /127.0.0.1
+[2026-05-28 13:49:03] Authentication Server started on port 9998
+[2026-05-28 13:49:03] Client connected from: /127.0.0.1
+[2026-05-28 13:49:03] Received register request from: servertestuser
+[2026-05-28 13:49:03] Received login request from: servertestuser
+[2026-05-28 13:49:03] Client disconnected: /127.0.0.1
+[2026-05-28 13:49:04] Client connected from: /127.0.0.1
+[2026-05-28 13:51:23] Authentication Server started on port 9998
+[2026-05-28 13:51:24] Client connected from: /127.0.0.1
+[2026-05-28 13:51:24] Received register request from: servertestuser
+[2026-05-28 13:51:24] Received login request from: servertestuser
+[2026-05-28 13:51:24] Client disconnected: /127.0.0.1
+[2026-05-28 13:51:24] Client connected from: /127.0.0.1
+[2026-05-28 13:51:24] Client connected from: /127.0.0.1
+[2026-05-28 13:51:24] Rejected due to timestamp mismatch.
+[2026-05-28 13:51:24] Client disconnected: /127.0.0.1
+[2026-05-28 13:51:25] Client connected from: /127.0.0.1
+[2026-05-28 14:09:20] Authentication Server started on port 9999
+[2026-05-28 14:09:42] Client connected from: /127.0.0.1
+[2026-05-28 14:10:00] Received register request from: Srijato
+[2026-05-28 14:16:27] Client disconnected: /127.0.0.1
+[2026-05-28 14:21:34] Authentication Server started on port 9999
+[2026-05-28 14:21:49] Client connected from: /127.0.0.1
+[2026-05-28 14:22:05] Received login request from: Srijato
+[2026-05-28 15:27:46] Connection handler error: Connection reset
+[2026-05-28 19:38:30] Authentication Server started on port 9999
+[2026-05-28 19:39:26] Client connected from: /127.0.0.1
+[2026-05-28 19:39:36] Received login request from: Srijato
+[2026-05-28 19:43:06] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:30] Authentication Server started on port 9998
+[2026-05-28 20:03:30] Client connected from: /127.0.0.1
+[2026-05-28 20:03:30] Received register request from: servertestuser
+[2026-05-28 20:03:30] Received login request from: servertestuser
+[2026-05-28 20:03:30] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Rejected due to timestamp mismatch.
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Received login request from: authsessionuser
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Received login request from: param1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Received login request from: testuser1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client disconnected: /127.0.0.1
+[2026-05-28 20:03:31] Client connected from: /127.0.0.1

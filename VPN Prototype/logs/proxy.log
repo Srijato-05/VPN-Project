@@ -7,3 +7,14 @@
 [2025-07-18 11:49:45] Proxy started on port 8888, forwarding to localhost:9999
 [2025-07-18 11:54:55] Proxy started on port 8888, forwarding to localhost:9999
 [2025-07-18 11:59:47] Proxy started on port 8888, forwarding to localhost:9999
+[2026-05-27 23:32:35] Proxy started on port 8888, forwarding to localhost:9999
+[2026-05-28 13:47:52] Proxy started on port 8888, forwarding to 127.0.0.1:9999
+[2026-05-28 13:49:03] Proxy started on port 9988, forwarding to 127.0.0.1:9998
+[2026-05-28 13:49:04] Accepted client from /127.0.0.1
+[2026-05-28 13:51:24] Proxy started on port 9988, forwarding to 127.0.0.1:9998
+[2026-05-28 13:51:24] Accepted client from /127.0.0.1
+[2026-05-28 14:09:32] Proxy started on port 8888, forwarding to 127.0.0.1:9999
+[2026-05-28 14:21:43] Proxy started on port 8888, forwarding to 127.0.0.1:9999
+[2026-05-28 19:39:07] Proxy started on port 8888, forwarding to 127.0.0.1:9999
+[2026-05-28 20:03:30] Proxy started on port 9988, forwarding to 127.0.0.1:9998
+[2026-05-28 20:03:31] Accepted client from /127.0.0.1

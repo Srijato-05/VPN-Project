@@ -13,8 +13,15 @@ public class NetUtils {
     private static final String RESPONSE_LOG = "logs/response.log";
     private static final String PROXY_LOG = "logs/proxy.log";
 
+    public static java.util.function.Consumer<String> guiLogListener = null;
+
     public static void logClient(String message) {
         logToFile(CLIENT_LOG, message);
+        if (guiLogListener != null) {
+            try {
+                guiLogListener.accept(message);
+            } catch (Exception ignored) {}
+        }
     }
 
     public static void logServer(String message) {

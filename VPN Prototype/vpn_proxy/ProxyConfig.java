@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ProxyConfig {
-    private static final String CONFIG_PATH = "config/proxy.properties";
+    private static final String CONFIG_PATH = "config/app_config.properties";
     private static final Properties props = new Properties();
 
     static {
@@ -15,6 +15,10 @@ public class ProxyConfig {
             System.err.println("Failed to load proxy configuration: " + CONFIG_PATH);
             System.err.println("Reason: " + e.getMessage());
         }
+    }
+
+    public static void setProperty(String key, String value) {
+        props.setProperty(key, value);
     }
 
     public static int getListenPort() {
