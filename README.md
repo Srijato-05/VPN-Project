@@ -1,170 +1,210 @@
-# Java-Based VPN GUI Project using OpenVPN
+# CipherVPN Professional: Technical Reference and Implementation Manual
 
-## Abstract
+## 1. Executive System Overview
 
-This project implements a complete **Java-based GUI VPN Client** that integrates seamlessly with **OpenVPN**. Designed to support multiple platforms (Windows, Linux, macOS, Android, iOS), it enables users to select platform-specific `.ovpn` configuration files, input credentials, connect/disconnect from the VPN, and monitor connection status in a user-friendly interface. It automates OpenVPN execution and logs all activities for auditing and diagnostics.
-
----
-
-## Table of Contents
-
-1. [Abstract](#-abstract)
-2. [Project Goals](#project-goals)
-3. [Key Features](#key-features)
-4. [System Requirements](#system-requirements)
-5. [System Architecture](#system-architecture)
-6. [Flowcharts & Diagrams](#flowcharts--diagrams)
-7. [Installation and Setup](#installation-and-setup)
-8. [How to Use](#how-to-use)
-9. [Final Notes](#final-notes)
-10. [Author](#author)
+CipherVPN Professional is an enterprise-grade Virtual Private Network (VPN) middleware and client dashboard prototype written in Java. The system is designed to provide secure, cross-platform VPN tunnel orchestration using OpenVPN and WireGuard backends. It integrates a local zero-knowledge credential vault, a hybrid network latency engine, session-based pre-authorization, and Windows Filtering Platform (WFP) rules for DNS leak protection.
 
 ---
 
-## Project Goals
+## 2. Core Architectural Components
 
-- Provide a **graphical user interface** for controlling OpenVPN connections.
-- Automate the VPN connection using `.ovpn` configuration files.
-- Allow **platform-based configuration selection** (Android, Windows, Linux, macOS, iOS).
-- Support automatic logging, user authentication, and timestamp tracking.
-- Provide real-time connection feedback and log error/status messages to the GUI and log files.
-
----
-
-## Key Features
-
-- ✅ GUI-based VPN Client written in Java using Swing.
-- 🔐 Credential entry with secure password handling.
-- 🔄 Platform-aware config selection (Android, iOS, macOS, Linux, Windows).
-- 📄 Reads `.ovpn` files per selected platform.
-- 🧠 Saves credentials temporarily to `vpn-auth.txt` for OpenVPN execution.
-- ⚙️ Executes OpenVPN using `cmd.exe` on Windows.
-- 🛠 Logs output from OpenVPN in real-time to GUI, terminal, and `client.log`.
-- 📆 Timestamps connection initiation and logs it to `login_history.txt`.
-- ❌ Detects and displays errors including incorrect credentials, DNS leaks, and disconnections.
-- 📡 Supports OpenVPN Data Channel Offload (DCO) for faster tunneling.
-- 📁 Organized folder structure with logs, configs, and executables separated.
-
----
-
-## System Requirements
-
-### Software
-- Java JDK 17 or higher
-- OpenVPN 2.6 or later
-- Windows/macOS/Linux
-- ProtonVPN configuration files (`*.ovpn`)
-
-### Hardware
-- Standard PC with minimum 4 GB RAM
-- Active internet connection
+```
+                                    +-----------------------------------+
+                                    |            Client GUI             |
+                                    |     (functionality.ClientGUI)     |
+                                    +-----------------+-----------------+
+                                                      |
+                                     (Command: LOGIN / REGISTER / CONFIG)
+                                                      |
+                                                      v
+                                            +-------------------+
+                                            |     VPN Proxy     |
+                                            | (vpn_proxy.Proxy) |
+                                            +---------+---------+
+                                                      |
+                                            (Encrypted Forwarding)
+                                                      |
+                                                      v
+                                    +-----------------------------------+
+                                    |       Authentication Server       |
+                                    |      (functionality.Server)       |
+                                    +-----------------+-----------------+
+                                                      |
+                                         (PBKDF2 SHA-256 Verification)
+                                                      |
+                                                      v
+                                    +-----------------------------------+
+                                    |           User Database           |
+                                    |          (data/users.txt)         |
+                                    +-----------------------------------+
+```
 
 ---
 
-## System Architecture
+## 3. Directory Structure
 
-### 🔹 Client Side
-- **GUI Interface**: Built using Java Swing.
-- **OpenVPN Execution**: Initiated via `ProcessBuilder`.
-- **Credential Management**: Stores temporary credentials in `vpn-auth.txt`.
-
-### 🔹 Core Components
-- **NetUtils**: Logs messages and handles formatting.
-- **ClientGUI**: Front-end for user input and control.
-- **Client**: Core networking functionality (VPN + proxy).
-- **ProxyMain**: Optional proxy forwarding.
-
-### 🔹 VPN Subsystem
-- Runs `openvpn.exe` with selected `.ovpn` file.
-- Redirects stdout to GUI and logs.
-- Tracks and handles all runtime errors.
-
----
-
-## Flowcharts & Diagrams
-
-### VPN Connection Flow
-
-[Start GUI]
-      ↓
-[User selects Platform]
-      ↓
-[User selects .ovpn file]
-      ↓
-[Enter Username + Password]
-      ↓
-[vpn-auth.txt created]
-      ↓
-[Execute OpenVPN via ProcessBuilder]
-      ↓
-[Monitor output → GUI + client.log]
-      ↓
-[Success?] ── Yes → [Connected]
-         └── No  → [Display Error]
-
-### Logging Workflow
-
-[OpenVPN Output Stream]
-           ↓
-[BufferedReader (thread)]
-           ↓
-[NetUtils.logClient()]
-           ↓
-[client.log + GUI Console]
+```
+VPN Prototype/
+├── config/
+│   ├── app_config.properties          # Global system parameters
+│   └── vpn_credentials.properties      # Downstream gateway credentials
+├── data/
+│   ├── users.txt                      # Hashed and salted authentication database
+│   └── login_history.txt              # User authentication log history
+├── keys/
+│   ├── private.key                    # RSA 2048-bit Server Private Key
+│   └── public.key                     # RSA 2048-bit Server Public Key
+├── openvpn-configs/
+│   └── [locations]/                   # Gateway configurations structured by platform
+├── functionality/
+│   ├── AppConfig.java                 # Config reader
+│   ├── Client.java                    # Base network client and cryptographic routines
+│   ├── ClientGUI.java                 # Dashboard Swing UI
+│   ├── CryptoUtils.java               # Cryptographic primitives (AES, RSA, Hashing)
+│   ├── NetUtils.java                  # Logging and utility functions
+│   ├── Server.java                    # Authentication Daemon listener
+│   └── UserValidator.java             # PBKDF2 DB validator and lockouts manager
+└── vpn_proxy/
+    ├── ProxyConfig.java               # Proxy parameters
+    └── ProxyMain.java                 # Port forwarding listener
+```
 
 ---
 
-## Installation and Setup
+## 4. API & Component Reference
 
-1. **Install Java JDK**  
-   Download and install JDK 17+ from [https://adoptopenjdk.net](https://adoptopenjdk.net)
+### 4.1. Client Subsystem (`functionality.Client`)
+* `void getOrCreateSocket()`: Establishes a persistent TCP connection to the server or proxy. Performs the initial RSA-AES key exchange.
+* `String sendCommand(String type, String param1, String param2)`: Packages a formatted command payload, adds an epoch timestamp to prevent replay attacks, encrypts the stream with the session key using AES-128-CBC, and transmits it.
+* `String sendCredentials(String username, char[] password, String type)`: Converts password character buffers to byte arrays, executes `sendCommand`, and securely overwrites the memory arrays.
+* `int pingServer(String host, int port)`: Performs a multi-stage latency check using a direct TCP connection. If the gateway blocks TCP, it falls back to DNS resolution tracking and injects a country-coded base latency calculation.
 
-2. **Install OpenVPN**  
-   Install OpenVPN from [https://openvpn.net/community-downloads](https://openvpn.net/community-downloads)
+### 4.2. Client Dashboard Subsystem (`functionality.ClientGUI`)
+* `void createAndShowGUI()`: Instantiates the Swing interface, registers layouts, configures themes, and triggers configuration queries.
+* `void attemptConnectWithFailover(int startIndex, ...)`: Orchesrates connections to the selected gateway profiles. If a profile connection times out, it recursively falls back to the next available profile in the list.
+* `void startWiFiAutoSecureMonitor()`: Launches a background monitor thread. If unsecured Wi-Fi interfaces are detected, it invokes the tunnel connection automatically if credentials have been pre-authorized.
+* `void startStatsMonitor()`: Polls tunnel bytes sent/received and session uptime to update the dashboard monitoring graphics.
 
-3. **Add ProtonVPN `.ovpn` files**  
-   Download from [https://account.protonvpn.com](https://account.protonvpn.com) and organize as per platform.
+### 4.3. Authentication Subsystem (`functionality.Server`)
+* `void main(String[] args)`: Starts the listening server on port `9999` and spawns a thread (`handleClient`) for each incoming socket connection.
+* `void handleClient(Socket socket, PrivateKey privateKey, ...)`: Decrypts the incoming client session key using the private RSA key, processes control commands, validates login/register requests, and generates session tokens.
 
-4. **Compile the project**  
-   javac -d out -sourcepath src src/main/functionality/ClientGUI.java
-
-5. **Run the GUI**
-   java -cp out functionality.ClientGUI
-
----
-
-## How to Use
-
-1. **Launch** `ClientGUI.java`.
-2. **Select a platform** from the dropdown (e.g., `windows`, `android`, etc.).
-3. **Choose a VPN config file** (`.ovpn`) from the second dropdown.
-4. **Enter your credentials**:
-   - Username: `5KMU58HDYulD24IR`
-   - Password: `11W1kY0UHFi55nG5LG2xwsBe14YKLjPn.`
-5. **Click “Connect VPN.”**
-6. VPN log output is streamed live:
-   - In the GUI
-   - In the terminal
-   - In the file: `logs/client.log`
-
-To **disconnect**, you can currently close the OpenVPN process manually (Task Manager or Command Line). GUI Disconnect Button will be added in future releases.
+### 4.4. Cryptographic Core (`functionality.CryptoUtils`)
+* `SecretKey generateKey(String passphrase)`: Derives a 128-bit AES key by hashing the passphrase via SHA-256 and copying the first 16 bytes.
+* `byte[] encryptAES(byte[] data, SecretKey key)`: Encrypts data using AES-128-CBC with PKCS5 padding. Generates a random 16-byte IV and prepends it to the ciphertext payload.
+* `byte[] decryptAES(byte[] data, SecretKey key)`: Extracts the first 16 bytes of the payload as the IV, and decrypts the remainder using AES-128-CBC.
+* `byte[] encryptRSA(byte[] data, PublicKey key)` / `decryptRSA(byte[] encryptedData, PrivateKey privateKey)`: Performs asymmetric encryption and decryption operations.
 
 ---
 
-## Final Notes
+## 5. Security & Cryptographic Handshake Protocol
 
-- This VPN project is intended for **educational and secure research purposes**.
-- The OpenVPN process is **fully integrated** within Java GUI, giving a hybrid native-Java VPN launcher.
-- This system does **mask your IP**, assuming the `.ovpn` configs are valid and authenticated.
+### 5.1. Initialization Sequence Diagram
 
-For any issue, logs in `logs/client.log` and `login_history.txt` will help you debug.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as "Client GUI / Client.java"
+    participant Proxy as "Proxy Main"
+    participant Server as "Server Daemon"
+    participant DB as "User Database"
+
+    Client->>Proxy: Establish TCP Connection
+    Proxy->>Server: Forward Connection Request (Port 9999)
+    Client->>Client: Generate Ephemeral AES-128 Key (K_aes)
+    Client->>Client: Encrypt K_aes using Server Public Key (RSA-2048)
+    Client->>Server: Transmit encrypted key size & Encrypted Key Payload
+    Server->>Server: Decrypt K_aes using Server Private Key (RSA-2048)
+    Note over Client,Server: Control Channel secured with symmetric key K_aes
+
+    Client->>Client: Read credentials (user, pass)
+    Client->>Server: Transmit AES-128-CBC Encrypted credential payload (LOGIN:user:pass:timestamp)
+    Server->>Server: Check timestamp delta against allowed window
+    Server->>DB: Query user record (username)
+    DB-->>Server: Return Salt & Hashed Password (PBKDF2 SHA-256)
+    Server->>Server: Compute hash of password with database salt
+    alt Validation Successful
+        Server->>Server: Generate Session Token (UUID)
+        Server-->>Client: Return Encrypted Response (SUCCESS:Token:vpn_user:vpn_pass)
+        Client->>Client: Cache token and credentials in memory and clear text input fields
+    else Validation Failed
+        Server-->>Client: Return Encrypted Response (ERROR:Auth failed)
+    end
+```
+
+### 5.2. Payload Specifications
+
+#### 1. Registration & Authentication Payload
+Encrypted payload string format:
+`[TYPE]:[USERNAME]:[PASSWORD]:[TIMESTAMP]`
+* **TYPE**: `REGISTER` or `LOGIN`
+* **USERNAME**: User profile identifier.
+* **PASSWORD**: User master password.
+* **TIMESTAMP**: Linux epoch time (in milliseconds) of transmission.
+
+#### 2. Configuration Retrieval Payload
+Encrypted payload string format:
+`GET_CONFIG:[PLATFORM]:[FILE_IDENTIFIER]|[MULTIHOP_FLAG]:[TIMESTAMP]`
+* **PLATFORM**: Operating system string (e.g. `windows`).
+* **FILE_IDENTIFIER**: Configuration profile file name.
+* **MULTIHOP_FLAG**: `true` if multi-hop routing is selected.
 
 ---
 
-## Author
+## 6. Threat Model and Security Controls
 
-**Srijato Das**  
-Java | OpenVPN | Secure Auth GUI  
-2025
+| Threat Category | Potential Vulnerability | System Mitigations & Controls |
+| :--- | :--- | :--- |
+| **Credential Exposure** | Dumped RAM logs exposing cleartext user password values. | Use of `char[]` arrays. Character fields are overwritten with zeros immediately after authentication, preventing credential recovery from memory. |
+| **Replay Attacks** | Capturing and retransmitting encrypted socket connection frames. | Timestamps are embedded in all AES packets. Packets exceeding a 30-second window are discarded by the server. |
+| **DNS Leaks** | DNS queries leaking to the local ISP through non-VPN network interfaces. | Integration with the Windows Filtering Platform (WFP) driver. WFP filters block outbound port 53 traffic on all interfaces except the active VPN TAP adapter. |
+| **Wi-Fi Hijacking** | Unsecured access points capturing client traffic before connection. | The Auto-Secure daemon monitors network connectivity changes. Upon identifying an untrusted SSID, it connects the VPN automatically. |
+| **Forensic Storage Analysis** | Recovering raw OpenVPN credentials or config files from local storage. | Temporary files are overwritten with zero bytes (`0x00`) before they are deleted from the disk. |
 
+---
 
+## 7. Execution Guide
+
+### 7.1. Prerequisites
+* **JDK**: Version 17 or higher.
+* **OpenVPN**: OpenVPN command-line executable installed on the client machine.
+* **Administrator Privileges**: The client must run in an elevated shell to configure network routes and assign IP configurations.
+
+### 7.2. Global Settings (`config/app_config.properties`)
+Modify configuration values prior to launch:
+```properties
+server.host=127.0.0.1
+server.port=9999
+auth.timestamp.window.ms=30000
+openvpn.exe.win=C:\\Program Files\\OpenVPN\\bin\\openvpn.exe
+listenPort=8888
+forwardHost=127.0.0.1
+forwardPort=9999
+path.users=data/users.txt
+path.history=data/login_history.txt
+path.auth=vpn-auth.txt
+config.dir=openvpn-configs
+```
+
+### 7.3. Compilation
+```powershell
+javac KeyGenerator.java functionality/*.java vpn_proxy/*.java VpnSystemTest.java
+```
+
+### 7.4. Execution Sequence
+
+#### 1. Start the Authentication Server
+```powershell
+java functionality.Server
+```
+
+#### 2. Start the VPN Proxy
+```powershell
+java vpn_proxy.ProxyMain
+```
+
+#### 3. Run the Client Dashboard (As Administrator)
+Open an elevated Administrator command shell and execute:
+```powershell
+java functionality.ClientGUI
+```
