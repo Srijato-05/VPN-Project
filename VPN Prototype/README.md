@@ -104,10 +104,10 @@ VPN Prototype/
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Client as Client GUI / Client.java
-    participant Proxy as Proxy Main
-    participant Server as Server Daemon
-    participant DB as User Database
+    participant Client as "Client GUI / Client.java"
+    participant Proxy as "Proxy Main"
+    participant Server as "Server Daemon"
+    participant DB as "User Database"
 
     Client->>Proxy: Establish TCP Connection
     Proxy->>Server: Forward Connection Request (Port 9999)
