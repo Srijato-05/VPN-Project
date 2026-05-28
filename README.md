@@ -208,3 +208,4 @@ Open an elevated Administrator command shell and execute:
 ```powershell
 java functionality.ClientGUI
 ```
+<img width="1919" height="1013" alt="image" src="https://github.com/user-attachments/assets/d5d77211-3c97-42f5-a708-b7b1f5fafba0" />
